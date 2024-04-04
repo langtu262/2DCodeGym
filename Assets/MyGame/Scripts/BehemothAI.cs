@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class BehemothAI : EnemyAI
+public class BehemothAI : EnemyAI, ICanTakeDamage
 {
 
     [SerializeField] private Rigidbody2D rb;
@@ -12,13 +12,15 @@ public class BehemothAI : EnemyAI
     [SerializeField] private float speed;
     [SerializeField] private SpriteRenderer sp;
     [SerializeField] private Animator anim;
-    private Transform target;
+    [SerializeField] private float attackDistance;
     [SerializeField] private float speedMove = 3;
     [SerializeField] private float stopDistance = 3;
+    [SerializeField] GameObject HurtEffect;
+    private Transform target;    
     private Vector3 pointC;
     private Vector3 targetPos;
     private int isIdle;
-    [SerializeField] private float attackDistance;
+    private bool isDead = false;
     void Start()
     {
         health = maxHealth;
@@ -27,7 +29,7 @@ public class BehemothAI : EnemyAI
         target=GameObject.FindGameObjectWithTag("Player").transform;
        
     }
-    public void TakeDamage()
+    /*public void TakeDamage()
     {
         health -= attack;
         if (health <= 0)
@@ -35,7 +37,7 @@ public class BehemothAI : EnemyAI
             anim.SetTrigger("isDead");
             Invoke("DesTroys", 1);
         }
-    }
+    }*/
     void DesTroys()
     {
         Destroy(gameObject);
@@ -66,7 +68,7 @@ public class BehemothAI : EnemyAI
                    }
                 
 
-                if (Vector2.Distance(transform.position, target.position) < attackDistance && health>0)
+                if (Vector2.Distance(transform.position, target.position) < attackDistance)
                 {
                     anim.SetBool("isAttack", true);
                 }
@@ -108,6 +110,21 @@ public class BehemothAI : EnemyAI
             }
         }        
     }
-   
+    public void TakeDamage (int damage, Vector2 force, GameObject instigator)
+    {
+        if(isDead) return;
+        health -= damage;
+        if (HurtEffect != null)
+        {
+            Instantiate(HurtEffect, instigator.transform.position, Quaternion.identity);
+        }
+        if(health<=0)
+        {
+            isDead = true;
+            anim.SetTrigger("IsDead");
+            Invoke("DesTroys", 3f);
+        }
+
+    }
 
 }

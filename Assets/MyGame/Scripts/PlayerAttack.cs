@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    private Animator anim;
-    private int idAttack;
+    
     [SerializeField] Transform pointAttack;
     [SerializeField] float radiusAttack;
     [SerializeField] LayerMask enemyLayer;
+    private Animator anim;
+    private int idAttack;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,10 +22,10 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            Attack();
+           // Attack();
         }
     }
-    void Attack()
+   /* void Attack()
     {
         anim.SetTrigger(idAttack);
         Collider2D[] hitEnemys = Physics2D.OverlapCircleAll (transform.position, radiusAttack,enemyLayer);
@@ -32,7 +33,7 @@ public class PlayerAttack : MonoBehaviour
         {
             enemy.GetComponent<BehemothAI>().TakeDamage();
         }
-    }
+    }*/
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;

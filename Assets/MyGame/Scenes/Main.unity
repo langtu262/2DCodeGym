@@ -276,6 +276,7 @@ MonoBehaviour:
   moveSpeed: 3
   jumFore: 9
   groundCheck: {fileID: 215722106}
+  maxHealth: 100
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -317,6 +318,10 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  attackRate: 0.2
+  attackAfterTime: 0.15
+  damageToGive: 10
+  fore: {x: 0, y: 0}
 --- !u!1 &215722105
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,7 +789,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1181454155}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.37, y: 0, z: 0}
+  m_LocalPosition: {x: 0.59, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -862,9 +867,12 @@ MonoBehaviour:
   speed: 2
   sp: {fileID: 416461389}
   anim: {fileID: 416461391}
+  attackDistance: 1.9
   speedMove: 2
   stopDistance: 6
-  attackDistance: 1.9
+  HurtEffect: {fileID: 113216, guid: 20400a4349ca29f41b9c336e87901ff8, type: 3}
+  damageToGive: 30
+  fore: {x: 0, y: 0}
 --- !u!50 &1674276086
 Rigidbody2D:
   serializedVersion: 4

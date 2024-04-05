@@ -16,13 +16,19 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
     [SerializeField] private float speedMove = 3;
     [SerializeField] private float stopDistance = 3;
     [SerializeField] GameObject HurtEffect;
+    [SerializeField] int damageToGive;
+    [SerializeField] Vector2 fore;
     private Transform target;    
     private Vector3 pointC;
     private Vector3 targetPos;
     private int isIdle;
     private bool isDead = false;
+    private float nextTime;
+    private float rateTime=0.2f;
+
     void Start()
     {
+
         health = maxHealth;
         pointC = pointA.position;
         isIdle = Animator.StringToHash("isIdle");
@@ -38,11 +44,6 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
             Invoke("DesTroys", 1);
         }
     }*/
-    void DesTroys()
-    {
-        Destroy(gameObject);
-    }
-    // Update is called once per frame
     void Update()
     {
         if (target != null)
@@ -68,19 +69,21 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
                    }
                 
 
-                if (Vector2.Distance(transform.position, target.position) < attackDistance)
+                if (Vector2.Distance(transform.position, target.position) < attackDistance && isDead==false)
                 {
                     anim.SetBool("isAttack", true);
                 }
                 else
                 {
-                    rb.velocity = dir* speedMove; //di chuyen
+                    if (isDead == false)
+                    { rb.velocity = dir * speedMove; } //di chuyen
                     anim.SetBool("isAttack", false);
                 }
 
             }
             else if(Vector2.Distance(transform.position, target.position) > stopDistance) 
             {
+                if (isDead == true) return;
                 /*if (anim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
                      return;*/
                 if (pointC == pointA.position)
@@ -110,21 +113,31 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
             }
         }        
     }
-    public void TakeDamage (int damage, Vector2 force, GameObject instigator)
+    public void TakeDamage (int damage, Vector2 force, GameObject instigator) //ke thua phuong thuc cua class ICanTakeDamage
     {
         if(isDead) return;
         health -= damage;
         if (HurtEffect != null)
         {
-            Instantiate(HurtEffect, instigator.transform.position, Quaternion.identity);
+            Instantiate(HurtEffect, instigator.transform.position, Quaternion.identity); // tao hieu ung khi bi danh trung
         }
         if(health<=0)
         {
             isDead = true;
-            anim.SetTrigger("IsDead");
-            Invoke("DesTroys", 3f);
+            anim.SetTrigger("isDead");
+            Destroy(gameObject, 3f);
         }
 
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        PlayerController player = target.GetComponent<PlayerController>(); // tao va gan doi tuong player va thanh phan cua doi tuong target trong class PlayerController
+        if (player == null) return;
+        if (isDead == true) return;
+        {
+            nextTime = Time.time + rateTime;
+            player.TakeDamage(damageToGive, fore, gameObject); // goi ham TakeDamege cua class playerController va truyen gia tri (damageToGive, fore, gameObject) vao
+        }
     }
 
 }

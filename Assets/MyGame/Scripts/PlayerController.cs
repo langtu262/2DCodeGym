@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ICanTakeDamage
 {
     [SerializeField] private float moveSpeed = 5.0f;
     [SerializeField] private float jumFore = 3.0f;
     [SerializeField] Transform groundCheck;
+    [SerializeField] int maxHealth = 100;
+    int currentHealth;
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
@@ -16,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private bool facingRight = true;
     private int idRunning;
     private int idJump;
+    private bool isPlayerDead = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,6 +26,7 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         idRunning = Animator.StringToHash("isRunning");
         idJump = Animator.StringToHash("isJump");
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -30,7 +34,7 @@ public class PlayerController : MonoBehaviour
     {
         float horizontalInput = Input.GetAxisRaw("Horizontal");
         isGround = Physics2D.OverlapCircle(groundCheck.position,0.2f,groundLayer);
-        if(horizontalInput != 0 )
+        if(horizontalInput != 0 && isPlayerDead==false )
         {
             Move(horizontalInput);
         }
@@ -39,16 +43,16 @@ public class PlayerController : MonoBehaviour
             anim.SetBool(idRunning, false);
         }
 
-        if(isGround&&Input.GetKeyDown(KeyCode.Space))
+        if(isGround&&Input.GetKeyDown(KeyCode.Space) && isPlayerDead == false)
         {
             Jump();
         }
         if(isGround == false)
         {
             anim.SetBool(idRunning, false);
-            anim.SetBool(idJump, true);
+            anim.SetTrigger(idJump);
         }
-        else
+         else
         {
             anim.SetBool(idJump, false);
         }
@@ -74,5 +78,16 @@ public class PlayerController : MonoBehaviour
         Vector2 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    public void TakeDamage(int damage, Vector2 force, GameObject instigator)
+    {
+        if (isPlayerDead) return;
+        currentHealth-=damage;
+        if (currentHealth <= 0)
+        {
+            isPlayerDead = true;
+            anim.SetTrigger("isDead");
+        }
     }
 }

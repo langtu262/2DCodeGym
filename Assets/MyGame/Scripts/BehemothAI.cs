@@ -24,7 +24,7 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
     private int isIdle;
     private bool isDead = false;
     private float nextTime;
-    private float rateTime=0.2f;
+    private float rateTime= 0.5f;
 
     void Start()
     {
@@ -35,15 +35,6 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
         target=GameObject.FindGameObjectWithTag("Player").transform;
        
     }
-    /*public void TakeDamage()
-    {
-        health -= attack;
-        if (health <= 0)
-        {
-            anim.SetTrigger("isDead");
-            Invoke("DesTroys", 1);
-        }
-    }*/
     void Update()
     {
         if (target != null)
@@ -131,12 +122,15 @@ public class BehemothAI : EnemyAI, ICanTakeDamage
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        PlayerController player = target.GetComponent<PlayerController>(); // tao va gan doi tuong player va thanh phan cua doi tuong target trong class PlayerController
-        if (player == null) return;
-        if (isDead == true) return;
+        if (collision.gameObject.tag == "Player")
         {
-            nextTime = Time.time + rateTime;
-            player.TakeDamage(damageToGive, fore, gameObject); // goi ham TakeDamege cua class playerController va truyen gia tri (damageToGive, fore, gameObject) vao
+            PlayerController player = target.GetComponent<PlayerController>(); // tao va gan doi tuong player va thanh phan cua doi tuong target trong class PlayerController
+            if (player == null) return;
+            if (isDead == true) return;
+            {
+                nextTime = Time.time + rateTime;
+                player.TakeDamage(damageToGive, fore, gameObject); // goi ham TakeDamege cua class playerController va truyen gia tri (damageToGive, fore, gameObject) vao
+            }
         }
     }
 

@@ -82,12 +82,15 @@ public class PlayerController : MonoBehaviour, ICanTakeDamage
 
     public void TakeDamage(int damage, Vector2 force, GameObject instigator)
     {
-        if (isPlayerDead) return;
-        currentHealth-=damage;
+        if (isPlayerDead == false)
+        { 
+        currentHealth -= damage;
+         }
+        Debug.Log(currentHealth);
         if (currentHealth <= 0)
         {
-            isPlayerDead = true;
             anim.SetTrigger("isDead");
+            isPlayerDead = true;            
         }
     }
 }
